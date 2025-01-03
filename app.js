@@ -1,3 +1,5 @@
+require('dotenv').config();  // Load environment variables from .env
+
 const express = require('express');
 const fileUpload = require('express-fileupload');
 const { google } = require('googleapis');
@@ -8,19 +10,21 @@ const path = require('path');
 const app = express();
 const PORT = 3000;
 
-// Create Upload Directory if not exists
+// Create Upload Directory if it doesn't exist
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir);
 }
 
-// Google Drive API Setup
-const KEY_FILE_PATH = './service-account-key.json';
-const SCOPES = ['https://www.googleapis.com/auth/drive.file'];
+// Decode and Parse Google Credentials from Environment Variable
+const credentials = JSON.parse(
+    Buffer.from(process.env.GOOGLE_CREDENTIALS, 'base64').toString('utf-8')
+);
 
+// Google Drive API Setup
 const auth = new google.auth.GoogleAuth({
-    keyFile: KEY_FILE_PATH,
-    scopes: SCOPES,
+    credentials,
+    scopes: ['https://www.googleapis.com/auth/drive.file'],
 });
 
 const drive = google.drive({ version: 'v3', auth });
@@ -38,9 +42,10 @@ app.post('/upload', async (req, res) => {
     }
 
     const file = req.files.file;
-    const folderId = '1CI2NNdnfpDOaVg8JVQBwlTh7uHoP4Ilx'; // Replace with your Google Drive Folder ID
+    const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID; // Replace with your Drive folder ID
 
     try {
+        // Prepare metadata and media for upload
         const fileMetadata = {
             name: file.name,
             parents: [folderId],
@@ -51,6 +56,7 @@ app.post('/upload', async (req, res) => {
             body: fs.createReadStream(file.tempFilePath),
         };
 
+        // Upload file to Google Drive
         const response = await drive.files.create({
             requestBody: fileMetadata,
             media: media,
@@ -60,13 +66,22 @@ app.post('/upload', async (req, res) => {
         // Clean up temporary file
         fs.unlinkSync(file.tempFilePath);
 
-        res.json({ fileId: response.data.id });
+        res.json({
+            message: 'File uploaded successfully!',
+            fileId: response.data.id,
+        });
     } catch (error) {
+        console.error('Error uploading file:', error);
         res.status(500).json({ error: error.message });
     }
 });
 
-// Start the server
+// Test Route
+app.get('/', (req, res) => {
+    res.send('File Upload Service Running...');
+});
+
+// Start the Server
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });

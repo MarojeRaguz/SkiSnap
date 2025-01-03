@@ -5,21 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Skijanje 2025.!</title>
-    <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-    <!-- Background container div -->
     <div class="background-img">
         <div class="container">
-            <h1>Skijanje 2025.!</h1> <!-- Changed h1 -->
+            <h1>Skijanje 2025.!</h1>
             <form id="uploadForm" enctype="multipart/form-data">
-                <!-- Hidden file input element -->
                 <input type="file" name="file" id="file" multiple required hidden>
-
-                <!-- Label as the "Odaberi slike" button with Font Awesome icon -->
                 <label for="file" class="file-label">
                     <i class="fas fa-image"></i> Odaberi slike
                 </label>
@@ -27,7 +22,7 @@
 
             <div id="uploadStatus"></div>
 
-            <!-- Link to Google Drive folder that will show after 11:52 AM on January 2, 2025 -->
+            <!-- Google Drive link (Hidden by default, shows after certain time) -->
             <div id="driveLink" style="display: none;">
                 <a href="https://drive.google.com/drive/u/0/folders/1CI2NNdnfpDOaVg8JVQBwlTh7uHoP4Ilx" target="_blank">
                     Galerija
@@ -39,74 +34,53 @@
     <script>
         const fileInput = document.getElementById('file');
         const uploadStatusDiv = document.getElementById('uploadStatus');
-        const driveLinkDiv = document.getElementById('driveLink');
 
-        // Display selected file names and upload
-        // Display selected file names and upload
         fileInput.onchange = function () {
             const files = Array.from(fileInput.files);
-
-            // Automatically upload the selected files
             files.forEach(file => uploadFile(file));
         };
 
-        // Function to upload file automatically
         function uploadFile(file) {
             const fileData = new FormData();
             fileData.append('file', file);
 
-            // Create a status row for each file
             const fileRow = document.createElement('div');
             fileRow.classList.add('file-row');
             fileRow.innerHTML = `
-        <div class="file-name">${file.name}</div>
-        <div id="status-${file.name}" class="status-check uploading">
-            <span class="loader"></span>
-        </div>
-    `;
+                <div class="file-name">${file.name}</div>
+                <div id="status-${file.name}" class="status-check uploading">
+                    <span class="loader"></span>
+                </div>
+            `;
             uploadStatusDiv.appendChild(fileRow);
 
             const xhr = new XMLHttpRequest();
             xhr.open('POST', '/upload', true);
 
-            // Track the response after the upload is completed for each file
             xhr.onload = function () {
                 if (xhr.status === 200) {
-                    // Remove spinner and add checkmark
                     document.getElementById(`status-${file.name}`).innerHTML = `✅`;
                 } else {
-                    // Remove spinner and show error
                     document.getElementById(`status-${file.name}`).innerHTML = `❌ Error`;
                 }
             };
 
-            // Handle errors
             xhr.onerror = function () {
-                // Remove spinner and show error
                 document.getElementById(`status-${file.name}`).innerHTML = `❌ Error`;
             };
 
-            // Send the file
             xhr.send(fileData);
         }
-        // Function to check the date and time and show the link after 11:52 AM on January 2, 2025
+
         function checkTimeAndShowLink() {
             const currentTime = new Date();
+            const targetDate = new Date(2025, 0, 7, 11, 52);
 
-            // Define the target date and time (11:52 AM, January 2, 2025)
-            const targetDate = new Date(2025, 0, 7, 12, 52); // January is month 0, day 2, 11:52 AM
-
-            // Check if the current date and time is greater than or equal to the target date and time
             if (currentTime >= targetDate) {
-                // Show the Google Drive link
                 document.getElementById('driveLink').style.display = 'block';
-
-                // Hide the "Odaberi slike" button
                 document.querySelector('.file-label').style.display = 'none';
             }
         }
-
-        // Call the function to check time on page load
         checkTimeAndShowLink();
     </script>
 </body>

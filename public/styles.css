@@ -1,130 +1,118 @@
-/* Basic Styling */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/* Background container with image */
+/* Full-screen background image */
 .background-img {
-    box-sizing: border-box;
     width: 100vw;
-    /* Full viewport width */
     height: 100vh;
-    /* Full viewport height */
     background-image: url('skijanje.jpg');
-    /* Background image */
     background-size: cover;
     background-position: center;
     display: flex;
     align-items: center;
-    /* Center content vertically */
     justify-content: center;
-    /* Center content horizontally */
-    position: relative;
-    /* Make the snowflakes position relative to the background */
 }
 
-/* Container for content */
+/* Content container */
 .container {
-    background: rgba(255, 255, 255, 0.8);
-    /* Semi-transparent background */
-    padding: 20px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    width: 400px;
+    background: rgba(255, 255, 255, 0.85);
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
     text-align: center;
-    border-radius: 10px;
-    z-index: 2;
-    /* Ensure it stays on top of snowflakes */
 }
 
-/* Label styling */
+/* File selection button */
 .file-label {
     display: inline-flex;
     align-items: center;
-    padding: 10px 20px;
+    justify-content: center;
+    padding: 12px 25px;
     background-color: #007BFF;
     color: white;
     font-size: 16px;
     cursor: pointer;
     border-radius: 5px;
-    margin-bottom: 10px;
+    margin: 15px 0;
 }
 
-/* Font Awesome icon styling */
 .file-label i {
-    margin-right: 8px;
-    /* Space between icon and text */
+    margin-right: 10px;
 }
 
-/* Link to Google Drive folder (initially hidden) */
-#driveLink {
-    margin-top: 20px;
-    font-size: 16px;
-    font-weight: bold;
-    color: #007BFF;
-    display: none;
-    /* Hide initially */
+/* File Row Styling */
+.file-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 8px 0;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
 }
 
+.file-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.status-check {
+    margin-left: 10px;
+}
+
+/* Google Drive link styling */
 #driveLink a {
     text-decoration: none;
+    font-weight: bold;
     color: #007BFF;
+    font-size: 18px;
 }
 
 #driveLink a:hover {
     text-decoration: underline;
 }
 
-/* File Row Styling */
-.file-row {
-    display: flex;
-    /* Make the file row a flex container */
-    justify-content: space-between;
-    /* Space out the file name and status */
-    align-items: center;
-    /* Align vertically */
-    margin: 10px 0;
-    /* Add space between rows */
-    border-bottom: 1px solid #ddd;
-    /* Optional border between rows */
-    padding-bottom: 5px;
-    /* Optional padding */
-}
-
-/* File name styling */
-.file-name {
-    flex: 1;
-    /* Allow the file name to take up remaining space */
-    text-overflow: ellipsis;
-    /* Show ellipsis for overflowed text */
-    white-space: nowrap;
-    /* Prevent text wrapping */
-    overflow: hidden;
-    /* Hide text that overflows */
-}
-
-/* Status styling */
-#status {
-    margin-left: 2px;
-    /* Space between ✅ and the file name */
-}
-
+/* Loading spinner */
 .loader {
-    width: 18px;
-    height: 18px;
-    border: 2px dotted #000;
+    width: 16px;
+    height: 16px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #007BFF;
     border-radius: 50%;
+    animation: spin 1s linear infinite;
     display: inline-block;
-    position: relative;
-    box-sizing: border-box;
-    animation: rotation 2s linear infinite;
-  }
-  
-  @keyframes rotation {
+}
+
+@keyframes spin {
     0% {
-      transform: rotate(0deg);
+        transform: rotate(0deg);
     }
     100% {
-      transform: rotate(360deg);
+        transform: rotate(360deg);
     }
-  } 
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 600px) {
+    .container {
+        width: 90%;
+        padding: 20px;
+    }
+    h1 {
+        font-size: 1.8em;
+    }
+    .file-label {
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+    #driveLink a {
+        font-size: 16px;
+    }
+}
